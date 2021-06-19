@@ -1,0 +1,83 @@
+{
+  "project_info": {
+    "project_number": "817711724421",
+    "firebase_url": "https://burnapp-fca75.firebaseio.com",
+    "project_id": "burnapp-fca75",
+    "storage_bucket": "burnapp-fca75.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:817711724421:android:7f4f538464474bd06876ec",
+        "android_client_info": {
+          "package_name": "ch.nate.burn_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "817711724421-uqn4mpv924g5ch1gpetqiv3t8oqgne8g.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDmIlFg09Yo39jLilUGXcXLKUnJDKsKmNU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "817711724421-uqn4mpv924g5ch1gpetqiv3t8oqgne8g.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "817711724421-mrei452bdiduubkg8u6cjauolc1lo66r.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "ch.nate.burnApp"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:817711724421:android:d68d56887984531d6876ec",
+        "android_client_info": {
+          "package_name": "com.nateeng.keychain"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "817711724421-uqn4mpv924g5ch1gpetqiv3t8oqgne8g.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDmIlFg09Yo39jLilUGXcXLKUnJDKsKmNU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "817711724421-uqn4mpv924g5ch1gpetqiv3t8oqgne8g.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "817711724421-mrei452bdiduubkg8u6cjauolc1lo66r.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "ch.nate.burnApp"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
