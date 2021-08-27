@@ -1,7 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:key_chain/keychain/key_states.dart';
-import 'package:provider/provider.dart';
 
 import 'my_drawer.dart';
 

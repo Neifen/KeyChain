@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:key_chain/app_constrains/my_scaffold.dart';
-import 'package:key_chain/key_maker/key_entity.dart';
+import 'package:key_chain/key_maker/created_key_entity.dart';
 import 'package:http/http.dart' as http;
 
 class KeyMakerPage extends StatelessWidget {
@@ -88,7 +88,7 @@ class KeyMakerPage extends StatelessWidget {
                   child: Text("Send"),
                   onPressed: () => sendKey(
                       context,
-                      KeyEntity(
+                      CreatedKeyEntity(
                         textController.text,
                         _setDateTime,
                       )),
@@ -101,7 +101,7 @@ class KeyMakerPage extends StatelessWidget {
     ));
   }
 
-  sendKey(BuildContext context, KeyEntity key) async {
+  sendKey(BuildContext context, CreatedKeyEntity key) async {
     FirebaseMessaging _messaging = FirebaseMessaging.instance;
 
     String? token = await _messaging.getToken(

@@ -1,10 +1,8 @@
-import 'dart:async';
-
-class KeyEntity {
+class CreatedKeyEntity {
   final String text;
   final DateTime dateTime;
 
-  KeyEntity(this.text, this.dateTime);
+  CreatedKeyEntity(this.text, this.dateTime);
 
   @override
   String toString() {

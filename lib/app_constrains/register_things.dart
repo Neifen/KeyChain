@@ -3,12 +3,11 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'dart:convert';
 
 const PUSH_NOTIFICATION_BUTTONS = "actionButtons";
 const NOTIFICATION_CHANEL = "key_channel";
 
-class RegisterFCM {
+class RegisterThings {
   void registerNotification() async {
     AwesomeNotifications().initialize(null, [
       NotificationChannel(

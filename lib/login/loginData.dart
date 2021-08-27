@@ -1,9 +1,9 @@
 import 'package:flutter/foundation.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 
 class LoginData extends ChangeNotifier {
   static const List admins = ["nate.bourquin@gmail.com"];
-  User? currentUser;
 
   User? getUser() {
     print("start getUser");
@@ -21,30 +21,56 @@ class LoginData extends ChangeNotifier {
     return admins.contains(currentUser.email);
   }
 
-  Future login({required String email, required String password}) async {
+  Future login(BuildContext context,
+      {required String email, required String password}) async {
     User? user;
     try {
       UserCredential userCredential = await FirebaseAuth.instance
           .signInWithEmailAndPassword(email: email, password: password);
       user = userCredential.user;
     } on FirebaseAuthException catch (e) {
-      if (e.code == 'user-not-found') {
-        print('No user found for that email.');
-      } else if (e.code == 'wrong-password') {
-        print('Wrong password provided for that user.');
-      }
+      handleAuthExceptions(context, e);
     }
 
     notifyListeners();
     return user;
   }
 
-//todo: remove ?
-  Future createUser(
-      {String? firstName,
-      String? lastName,
-      String? email,
-      String? password}) async {}
+  Future createUser(BuildContext context,
+      {required String email, required String password}) async {
+    User? user;
+
+    try {
+      await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(email: email, password: password);
+    } on FirebaseAuthException catch (e) {
+      handleAuthExceptions(context, e);
+    }
+    notifyListeners();
+    return user;
+  }
+
+  void handleAuthExceptions(context, e) {
+    String message;
+    if (e.code == 'user-not-found') {
+      message = 'No user found for that email.';
+    } else if (e.code == 'email-already-in-use') {
+      message = 'Email is already in use.';
+    } else if (e.code == 'weak-password') {
+      message = 'Password is too weak. Try adding a number.';
+    } else if (e.code == 'wrong-password') {
+      message = 'Wrong password provided for that user.';
+    } else {
+      message = e.toString();
+    }
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: Colors.red,
+      ),
+    );
+  }
 
   void logout() async {
     await FirebaseAuth.instance.signOut();

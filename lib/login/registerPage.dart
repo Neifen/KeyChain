@@ -1,19 +1,18 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:key_chain/app_constrains/my_scaffold.dart';
 import 'package:key_chain/login/logoutPage.dart';
-import 'package:key_chain/login/registerPage.dart';
 import 'package:provider/provider.dart';
 
 import 'loginData.dart';
 
-class LoginPage extends StatelessWidget {
-  static const String route = 'login';
+class RegisterPage extends StatelessWidget {
+  static const String route = 'register';
 
   @override
   Widget build(BuildContext context) {
     var _key = GlobalKey<FormState>();
     String? _password;
+    String? _passwordRep;
     String? _email;
 
     return MyScaffold(body: Consumer<LoginData>(builder: (_, loginData, ___) {
@@ -36,15 +35,8 @@ class LoginPage extends StatelessWidget {
               ),
               TextFormField(
                 onSaved: (value) => _email = value,
-                textCapitalization: TextCapitalization.none,
                 keyboardType: TextInputType.emailAddress,
                 decoration: InputDecoration(labelText: "Email Address"),
-                validator: (value) {
-                  if (value == null || value.isEmpty || !value.contains('@')) {
-                    return 'Please enter a valid email address.';
-                  }
-                  return null;
-                },
               ),
               SizedBox(
                 height: 16.0,
@@ -53,12 +45,14 @@ class LoginPage extends StatelessWidget {
                 onSaved: (value) => _password = value,
                 obscureText: true,
                 decoration: InputDecoration(labelText: "Password"),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter a password.';
-                  }
-                  return null;
-                },
+              ),
+              SizedBox(
+                height: 16.0,
+              ),
+              TextFormField(
+                onSaved: (value) => _passwordRep = value,
+                obscureText: true,
+                decoration: InputDecoration(labelText: "Re-enter Password"),
               ),
               SizedBox(
                 height: 16.0,
@@ -69,15 +63,13 @@ class LoginPage extends StatelessWidget {
                     form.save();
                     if (form.validate() &&
                         _email != null &&
-                        _password != null) {
-                      Provider.of<LoginData>(context, listen: false)
-                          .login(context, email: _email!, password: _password!);
+                        _password != null &&
+                        _password == _passwordRep) {
+                      Provider.of<LoginData>(context, listen: false).createUser(
+                          context,
+                          email: _email!,
+                          password: _password!);
                     }
-                  },
-                  child: Text("Login")),
-              ElevatedButton(
-                  onPressed: () {
-                    Navigator.pushNamed(context, RegisterPage.route);
                   },
                   child: Text("Register"))
             ],
