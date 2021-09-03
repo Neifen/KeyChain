@@ -1,5 +1,3 @@
-import 'dart:html';
-
 import 'package:flutter/material.dart';
 
 import 'key_entity.dart';
@@ -21,6 +19,9 @@ class KeyCard extends StatelessWidget {
         ),
         alignment: Alignment.centerRight,
       ),
+      onDismissed: (direction) {
+        KeyEntity.deleteKey(this._key);
+      },
       child: Card(
           elevation: 8.0,
           child: Padding(
