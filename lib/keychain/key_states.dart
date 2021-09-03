@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:key_chain/keychain/key_entity.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class KeyStates extends ChangeNotifier {
-  static String _pref_name = 'receiveKeys';
+  static String prefName = 'receiveKeys';
   SharedPreferences? sharedPreferences;
 
   KeyStates() {
@@ -13,7 +14,7 @@ class KeyStates extends ChangeNotifier {
 
   loadPreference() async {
     sharedPreferences = await SharedPreferences.getInstance();
-    var savedPref = sharedPreferences!.getBool(_pref_name);
+    var savedPref = sharedPreferences!.getBool(prefName);
     if (savedPref != null && savedPref) {
       receiveKeys = true;
       _firstTime = false;
@@ -23,11 +24,20 @@ class KeyStates extends ChangeNotifier {
 
   bool get firstTime => _firstTime;
 
-  switchKey() {
+  switchKey() async {
     receiveKeys = !receiveKeys;
     _firstTime = false;
+
+    // when receveKeys is OFF and the list is EMPTY -> show welcome screen
+    if (!receiveKeys && (await KeyEntity.count()) == 0) {
+      _firstTime = true;
+    }
     notifyListeners();
 
-    sharedPreferences?.setBool(_pref_name, receiveKeys);
+    sharedPreferences?.setBool(prefName, receiveKeys);
+  }
+
+  resetFirstTime() {
+    _firstTime = true;
   }
 }

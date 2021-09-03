@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:key_chain/app_constrains/my_scaffold.dart';
 import 'package:key_chain/login/logoutPage.dart';

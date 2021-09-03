@@ -17,15 +17,15 @@ class KeyEntity {
     };
   }
 
-  // Implement toString to make it easier to see information about
-  // each dog when using the print statement.
-  @override
-  String toString() {
-    return 'Key{id: $id, content: $content, receptionDateTime: $receptionDateTime}';
+  static deleteKey(KeyEntity key) async {
+    final db = await DBProvider.db.database;
+
+    var res = await db.delete(TABLE_NAME, where: 'id=?', whereArgs: [key.id]);
+
+    return res == 1;
   }
 
   static insertKey(KeyEntity key) async {
-    // Get a reference to the database.
     final db = await DBProvider.db.database;
 
     // Insert Key
@@ -38,8 +38,13 @@ class KeyEntity {
     return res;
   }
 
+  static Future<int> count() async {
+    final db = await DBProvider.db.database;
+    return Sqflite.firstIntValue(
+        await db.rawQuery('SELECT COUNT(*) FROM $TABLE_NAME'))!;
+  }
+
   static Future<List<KeyEntity>> keys() async {
-    // Get a reference to the database.
     final db = await DBProvider.db.database;
 
     // Query the table for all The Dogs.
