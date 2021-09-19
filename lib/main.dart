@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:key_chain/app_constrains/register_things.dart';
@@ -10,7 +12,7 @@ import 'package:key_chain/login/loginPage.dart';
 import 'package:key_chain/login/registerPage.dart';
 import 'package:provider/provider.dart';
 import 'key_maker/key_maker_page.dart';
-import 'keychain/key_saver.dart';
+import 'keychain/key_reciever.dart';
 import 'keychain/key_states.dart';
 
 void main() {
@@ -24,10 +26,10 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (context) => KeySaver()),
-        ChangeNotifierProvider(create: (context) => KeyStates()),
-        ChangeNotifierProvider(create: (context) => LoginData()),
-        ChangeNotifierProvider(create: (context) => PageNumber())
+        ChangeNotifierProvider(create: (_) => LoginData()),
+        ChangeNotifierProvider(create: (_) => KeyReciever()),
+        ChangeNotifierProvider(create: (_) => KeyStates()),
+        ChangeNotifierProvider(create: (_) => PageNumber())
       ],
       child: MaterialApp(
         title: 'Keys for life',

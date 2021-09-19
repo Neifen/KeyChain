@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:key_chain/keychain/key_entity.dart';
+import 'package:key_chain/keychain/db/key_saver.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class KeyStates extends ChangeNotifier {
@@ -29,7 +29,7 @@ class KeyStates extends ChangeNotifier {
     _firstTime = false;
 
     // when receveKeys is OFF and the list is EMPTY -> show welcome screen
-    if (!receiveKeys && (await KeyEntity.count()) == 0) {
+    if (!receiveKeys && (await KeySaver().count()) == 0) {
       _firstTime = true;
     }
     notifyListeners();
