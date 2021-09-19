@@ -1,7 +1,7 @@
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/widgets.dart';
 import 'package:key_chain/keychain/db/key_saver.dart';
-import 'package:key_chain/keychain/key_entity.dart';
+import 'package:key_chain/keychain/db/key_entity.dart';
 
 class KeyReciever extends ChangeNotifier {
   List<KeyEntity> _keyList = [];
@@ -12,9 +12,16 @@ class KeyReciever extends ChangeNotifier {
     AwesomeNotifications().actionStream.listen(_onNotificationAction);
   }
 
-  void loadKeys() async {
+  loadKeys() async {
     _keyList = await KeySaver().keys();
     notifyListeners();
+  }
+
+//note: not very pretty to have 2 "controllers" and have this one called reciever. But the key needs to be removed in all UIs
+  removeKey(KeyEntity key) {
+    _keyList.remove(key);
+    notifyListeners();
+    KeySaver().removeKey(key);
   }
 
   void _onNotificationAction(ReceivedAction event) {

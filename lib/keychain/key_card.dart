@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:key_chain/keychain/db/key_saver.dart';
+import 'package:key_chain/keychain/key_reciever.dart';
+import 'package:provider/provider.dart';
 
-import 'key_entity.dart';
+import 'db/key_entity.dart';
 
 class KeyCard extends StatelessWidget {
   final KeyEntity _key;
@@ -21,7 +22,7 @@ class KeyCard extends StatelessWidget {
         alignment: Alignment.centerRight,
       ),
       onDismissed: (direction) {
-        KeySaver().deleteKey(this._key);
+        context.read<KeyReciever>().removeKey(this._key);
       },
       child: Card(
           elevation: 8.0,

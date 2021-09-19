@@ -20,9 +20,6 @@ class RegisterThings {
 
     await Firebase.initializeApp();
     grandPermissions();
-
-    FirebaseMessaging.onBackgroundMessage(_onMessageHandler);
-    FirebaseMessaging.onMessage.listen(_onMessageHandler);
   }
 }
 
@@ -46,16 +43,4 @@ void grandPermissions() async {
     sound: true,
   );
   print('User granted permission: ${settings.authorizationStatus}');
-}
-
-Future<void> _onMessageHandler(RemoteMessage message) async {
-  await Firebase.initializeApp();
-  print('## Got a Firecloud message!');
-  print('## Message data: ${message.data}');
-
-  if (message.notification != null) {
-    print('## Message also contained a notification: ${message.notification}');
-  }
-
-  AwesomeNotifications().createNotificationFromJsonData(message.data);
 }

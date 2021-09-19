@@ -1,10 +1,8 @@
-import 'dart:convert';
-
 import 'package:key_chain/keychain/db/key_controller_state.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 
-import '../key_entity.dart';
+import 'key_entity.dart';
 
 class FireDBKeyController implements IKeyControllerState {
   static const TABLE_NAME = 'keys';
@@ -42,7 +40,7 @@ class FireDBKeyController implements IKeyControllerState {
   }
 
   @override
-  deleteKey(KeyEntity key) async {
+  removeKey(KeyEntity key) async {
     getRef().child("list/${key.receptionDateTime}").remove();
 
     int counter = await count();

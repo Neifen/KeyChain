@@ -2,13 +2,13 @@ import 'package:key_chain/app_constrains/db_provider.dart';
 import 'package:key_chain/keychain/db/key_controller_state.dart';
 import 'package:sqflite/sqflite.dart';
 
-import '../key_entity.dart';
+import 'key_entity.dart';
 
 class SQLiteKeyController implements IKeyControllerState {
   static const TABLE_NAME = 'keys';
 
   @override
-  deleteKey(KeyEntity key) async {
+  removeKey(KeyEntity key) async {
     final db = await DBProvider.db.database;
 
     var res = await db.delete(TABLE_NAME, where: 'id=?', whereArgs: [key.id]);

@@ -1,7 +1,7 @@
-import '../key_entity.dart';
+import 'key_entity.dart';
 
 abstract class IKeyControllerState {
-  deleteKey(KeyEntity key);
+  removeKey(KeyEntity key);
   deleteAll();
 
   insertKey(KeyEntity key);

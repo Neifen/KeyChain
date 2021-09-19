@@ -5,7 +5,7 @@ import 'package:key_chain/keychain/db/key_controller_state.dart';
 import 'package:key_chain/keychain/db/sqlite_key_controller.dart';
 import 'package:key_chain/login/loginData.dart';
 
-import '../key_entity.dart';
+import 'key_entity.dart';
 
 class KeySaver {
   late IKeyControllerState _currentState;
@@ -43,8 +43,8 @@ class KeySaver {
     _currentState = newState;
   }
 
-  deleteKey(KeyEntity key) async {
-    return _currentState.deleteKey(key);
+  removeKey(KeyEntity key) async {
+    return _currentState.removeKey(key);
   }
 
   insertKey(KeyEntity key) async {
