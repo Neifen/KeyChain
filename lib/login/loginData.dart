@@ -1,13 +1,12 @@
 import 'package:flutter/foundation.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:key_chain/keychain/db/key_saver.dart';
 
 class LoginData extends ChangeNotifier {
   static const List admins = ["nate.bourquin@gmail.com"];
 
   User? getUser() {
-    print("start getUser");
-
     return FirebaseAuth.instance.currentUser;
   }
 
@@ -30,8 +29,10 @@ class LoginData extends ChangeNotifier {
       user = userCredential.user;
     } on FirebaseAuthException catch (e) {
       handleAuthExceptions(context, e);
+      return;
     }
 
+    KeySaver().login(email);
     notifyListeners();
     return user;
   }
@@ -45,7 +46,10 @@ class LoginData extends ChangeNotifier {
           .createUserWithEmailAndPassword(email: email, password: password);
     } on FirebaseAuthException catch (e) {
       handleAuthExceptions(context, e);
+      return;
     }
+
+    KeySaver().login(email);
     notifyListeners();
     return user;
   }
@@ -73,9 +77,12 @@ class LoginData extends ChangeNotifier {
   }
 
   void logout() async {
+    //needs to get the data and save it offline first because of permissions
+    KeySaver().logout();
+
     await FirebaseAuth.instance.signOut();
+
     notifyListeners();
-    print("logged out");
   }
 
   bool isLoggedIn() {
