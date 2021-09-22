@@ -1,13 +1,63 @@
 import 'package:flutter/material.dart';
 import 'package:key_chain/app_constrains/my_scaffold.dart';
+import 'package:key_chain/keychain/db/key_saver.dart';
+import 'package:key_chain/keychain/key_reciever.dart';
 import 'package:key_chain/login/logoutPage.dart';
 import 'package:key_chain/login/registerPage.dart';
 import 'package:provider/provider.dart';
 
-import 'loginData.dart';
+import 'authProvider.dart';
 
 class LoginPage extends StatelessWidget {
   static const String route = 'login';
+
+  showLoginDialog(BuildContext context, String _email, String _password) {
+    // set up the buttons
+    Widget cancelButton = ElevatedButton(
+      child: Text("Cancel"),
+      onPressed: () {
+        Navigator.of(context).pop();
+      },
+    );
+    Widget resetButton = ElevatedButton(
+      child: Text("Remove Offline Keys"),
+      onPressed: () async {
+        Navigator.of(context).pop();
+        if ((await Provider.of<AuthProvider>(context, listen: false)
+                .login(context, email: _email, password: _password) !=
+            null)) {
+          await KeySaver().loginAndOnlyTakeFireDB(_email);
+          context.read<KeyReciever>().loadKeys();
+        }
+      },
+    );
+    Widget keepButton = ElevatedButton(
+      child: Text("Mix"),
+      onPressed: () async {
+        Navigator.of(context).pop();
+        if ((await Provider.of<AuthProvider>(context, listen: false)
+                .login(context, email: _email, password: _password) !=
+            null)) {
+          await KeySaver().loginAndMix(_email);
+          context.read<KeyReciever>().loadKeys();
+        }
+      },
+    );
+
+    AlertDialog alert = AlertDialog(
+      title: Text("Logout"),
+      content: Text(
+          "Would you like to mix your offline and online keys or only keep your online keys?"),
+      actions: [keepButton, resetButton, cancelButton],
+    );
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +65,8 @@ class LoginPage extends StatelessWidget {
     String? _password;
     String? _email;
 
-    return MyScaffold(body: Consumer<LoginData>(builder: (_, loginData, ___) {
+    return MyScaffold(
+        body: Consumer<AuthProvider>(builder: (_, loginData, ___) {
       if (loginData.isLoggedIn()) {
         return LogoutPage();
       }
@@ -69,8 +120,7 @@ class LoginPage extends StatelessWidget {
                     if (form.validate() &&
                         _email != null &&
                         _password != null) {
-                      Provider.of<LoginData>(context, listen: false)
-                          .login(context, email: _email!, password: _password!);
+                      showLoginDialog(context, _email!, _password!);
                     }
                   },
                   child: Text("Login")),

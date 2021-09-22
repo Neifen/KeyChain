@@ -3,7 +3,7 @@ import 'package:key_chain/app_constrains/my_scaffold.dart';
 import 'package:key_chain/login/logoutPage.dart';
 import 'package:provider/provider.dart';
 
-import 'loginData.dart';
+import 'authProvider.dart';
 
 class RegisterPage extends StatelessWidget {
   static const String route = 'register';
@@ -15,7 +15,8 @@ class RegisterPage extends StatelessWidget {
     String? _passwordRep;
     String? _email;
 
-    return MyScaffold(body: Consumer<LoginData>(builder: (_, loginData, ___) {
+    return MyScaffold(
+        body: Consumer<AuthProvider>(builder: (_, loginData, ___) {
       if (loginData.isLoggedIn()) {
         return LogoutPage();
       }
@@ -65,10 +66,9 @@ class RegisterPage extends StatelessWidget {
                         _email != null &&
                         _password != null &&
                         _password == _passwordRep) {
-                      Provider.of<LoginData>(context, listen: false).createUser(
-                          context,
-                          email: _email!,
-                          password: _password!);
+                      Provider.of<AuthProvider>(context, listen: false)
+                          .createUser(context,
+                              email: _email!, password: _password!);
                     }
                   },
                   child: Text("Register"))

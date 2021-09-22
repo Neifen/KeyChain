@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:key_chain/keychain/db/firedb_key_controller.dart';
 import 'package:key_chain/keychain/db/key_controller_state.dart';
 import 'package:key_chain/keychain/db/sqlite_key_controller.dart';
-import 'package:key_chain/login/loginData.dart';
+import 'package:key_chain/login/authProvider.dart';
 
 import 'key_entity.dart';
 
@@ -14,8 +14,8 @@ class KeySaver {
   //todo: find out why the private constructor is needed
   static final KeySaver _instance = KeySaver._privateConstructor();
   KeySaver._privateConstructor() {
-    if (LoginData().isLoggedIn()) {
-      _currentState = FireDBKeyController(LoginData().getUser()!.email!);
+    if (AuthProvider().isLoggedIn()) {
+      _currentState = FireDBKeyController(AuthProvider().getUser()!.email!);
     } else {
       _currentState = SQLiteKeyController();
     }
@@ -25,20 +25,32 @@ class KeySaver {
     return _instance;
   }
 
-  login(String userId) {
+  loginAndOnlyTakeFireDB(String userId) async {
     if (_currentState is FireDBKeyController) return;
-    _switchState(FireDBKeyController(userId));
+    _currentState.deleteAll();
+    await _switchState(FireDBKeyController(userId));
   }
 
-  logout() {
+  loginAndMix(String userId) async {
+    if (_currentState is FireDBKeyController) return;
+    await _switchState(FireDBKeyController(userId));
+  }
+
+  logoutAndKeep() {
     if (_currentState is SQLiteKeyController) return;
     _switchState(SQLiteKeyController());
   }
 
-  _switchState(IKeyControllerState newState) async {
-    var keys = await _currentState.keys();
-    newState.insertAll(keys);
+  logoutAndReset() async {
+    if (_currentState is SQLiteKeyController) return;
+    await _switchState(SQLiteKeyController());
     _currentState.deleteAll();
+  }
+
+  _switchState(IKeyControllerState newState) async {
+    var oldKeys = await _currentState.keys();
+
+    await newState.insertAll(oldKeys);
 
     _currentState = newState;
   }

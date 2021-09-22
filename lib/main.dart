@@ -7,7 +7,7 @@ import 'package:key_chain/contact/contact_page.dart';
 import 'package:key_chain/gospel_track/gospel_track_page.dart';
 import 'package:key_chain/gospel_track/page_number.dart';
 import 'package:key_chain/keychain/keychain_page.dart';
-import 'package:key_chain/login/loginData.dart';
+import 'package:key_chain/login/authProvider.dart';
 import 'package:key_chain/login/loginPage.dart';
 import 'package:key_chain/login/registerPage.dart';
 import 'package:provider/provider.dart';
@@ -27,7 +27,7 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => KeyStates()),
-        ChangeNotifierProvider(create: (_) => LoginData()),
+        ChangeNotifierProvider(create: (_) => AuthProvider()),
         ChangeNotifierProvider(create: (_) => KeyReciever()),
         ChangeNotifierProvider(create: (_) => PageNumber())
       ],

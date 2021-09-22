@@ -5,17 +5,17 @@ import 'package:key_chain/contact/contact_page.dart';
 import 'package:key_chain/gospel_track/gospel_track_page.dart';
 import 'package:key_chain/key_maker/key_maker_page.dart';
 import 'package:key_chain/keychain/keychain_page.dart';
-import 'package:key_chain/login/loginData.dart';
+import 'package:key_chain/login/authProvider.dart';
 import 'package:key_chain/login/loginPage.dart';
 import 'package:provider/provider.dart';
 
 class MyDrawer extends StatelessWidget {
-  static Widget _createRestrictedDrawerItem(BuildContext context,
+  Widget _createAdminDrawerItem(BuildContext context,
       {required String text,
       required String page,
       IconData? iconData,
-      required LoginData loginData}) {
-    if (loginData.isAdmin()) {
+      required AuthProvider auth}) {
+    if (auth.isAdmin()) {
       return ListTile(
         title: Padding(
           padding: EdgeInsets.only(left: 8.0),
@@ -31,7 +31,23 @@ class MyDrawer extends StatelessWidget {
     }
   }
 
-  static Widget _createDrawerItem(BuildContext context,
+  Widget _createOnlineOfflineDrawerItem(BuildContext context,
+      {required String onlineText,
+      required String offlineText,
+      required String page,
+      IconData? iconData,
+      required AuthProvider auth}) {
+    return ListTile(
+      title: Padding(
+        padding: EdgeInsets.only(left: 8.0),
+        child: Text(auth.isLoggedIn() ? onlineText : offlineText),
+      ),
+      trailing: Icon(iconData),
+      onTap: () => Navigator.pushNamed(context, page),
+    );
+  }
+
+  Widget _createDrawerItem(BuildContext context,
       {required String text, required String page, IconData? iconData}) {
     return ListTile(
       title: Padding(
@@ -43,7 +59,7 @@ class MyDrawer extends StatelessWidget {
     );
   }
 
-  static Widget _createHeader(String _text) {
+  Widget _createHeader(String _text) {
     return DrawerHeader(
         child: Stack(children: <Widget>[
       Positioned(
@@ -59,7 +75,7 @@ class MyDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<LoginData>(
+    return Consumer<AuthProvider>(
       builder: (_, data, ___) => Drawer(
         child: ListView(
           padding: EdgeInsets.zero,
@@ -72,15 +88,19 @@ class MyDrawer extends StatelessWidget {
               page: KeyChainPage.route,
               iconData: Icons.dns_outlined,
             ),
-            _createDrawerItem(context,
-                text: 'Save Keys to cloud / Login',
+            _createOnlineOfflineDrawerItem(context,
+                offlineText: 'Save Keys to cloud / Login',
+                onlineText: 'Logout',
                 page: LoginPage.route,
-                iconData: Icons.login_outlined),
-            _createRestrictedDrawerItem(context,
-                text: 'Keymaker',
-                page: KeyMakerPage.route,
-                iconData: CupertinoIcons.hammer,
-                loginData: data),
+                iconData: Icons.login_outlined,
+                auth: data),
+            _createAdminDrawerItem(
+              context,
+              text: 'Keymaker',
+              page: KeyMakerPage.route,
+              iconData: CupertinoIcons.hammer,
+              auth: data,
+            ),
             _createDrawerItem(context,
                 text: 'Contact us',
                 page: ContactPage.route,
