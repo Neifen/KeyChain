@@ -1,11 +1,11 @@
 class CreatedKeyEntity {
   final String text;
-  final DateTime dateTime;
+  final int timeStamp;
 
-  CreatedKeyEntity(this.text, this.dateTime);
+  CreatedKeyEntity(this.text, this.timeStamp);
 
   @override
   String toString() {
-    return 'KeyEntity: $text with date: $dateTime ';
+    return 'KeyEntity: $text with date: $timeStamp ';
   }
 }

@@ -13,9 +13,7 @@ class FireDBKeyController implements IKeyControllerState {
   }
 
   DatabaseReference getRef() {
-    final FirebaseApp firebaseApp = Firebase.app('[DEFAULT]');
     return FirebaseDatabase(
-            app: firebaseApp,
             databaseURL: "https://burnapp-fca75.firebaseio.com/")
         .reference()
         .child("keys/$_userId");
@@ -25,8 +23,8 @@ class FireDBKeyController implements IKeyControllerState {
   insertKey(KeyEntity key) async {
     getRef().child("list/${key.receptionDateTime}").set(key.content);
 
-    int counter = await count();
-    getRef().child("count").set(++counter);
+    int counter = await count() + 1;
+    getRef().child("count").set(counter);
   }
 
   @override
@@ -43,19 +41,20 @@ class FireDBKeyController implements IKeyControllerState {
   removeKey(KeyEntity key) async {
     getRef().child("list/${key.receptionDateTime}").remove();
 
-    int counter = await count();
-    getRef().child("count").set(--counter);
+    int counter = await count() - 1;
+    getRef().child("count").set(counter);
   }
 
   @override
   Future<List<KeyEntity>> keys() async {
     var snapshot = await getRef().child("list").get();
     List<KeyEntity> keyList = [];
-    snapshot.value.keys.forEach((key) {
-      keyList
-          .add(KeyEntity(content: snapshot.value[key], receptionDateTime: key));
-    });
-
+    if (snapshot.exists) {
+      snapshot.value.keys.forEach((key) {
+        keyList.add(
+            KeyEntity(content: snapshot.value[key], receptionDateTime: key));
+      });
+    }
     return keyList;
   }
 

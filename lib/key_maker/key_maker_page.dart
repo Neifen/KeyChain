@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -24,77 +25,28 @@ class KeyMakerPage extends StatelessWidget {
         body: Form(
       child: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
+        child: Row(
           children: [
-            TextFormField(
-              decoration: InputDecoration(
-                hintText: "Start typing key...",
+            Flexible(
+              child: TextFormField(
+                decoration: InputDecoration(
+                  hintText: "Start typing key...",
+                ),
+                controller: textController,
+                maxLines: 3,
+                maxLength: 120,
+                maxLengthEnforcement: MaxLengthEnforcement.none,
               ),
-              controller: textController,
-              maxLines: 3,
-              maxLength: 120,
-              maxLengthEnforcement: MaxLengthEnforcement.none,
             ),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Flexible(
-                  flex: 2,
-                  child: TextFormField(
-                      controller: dateController,
-                      decoration: InputDecoration(
-                        hintText: "Press to choose a date",
-                      ),
-                      onTap: () async {
-                        var date = await showDatePicker(
-                            context: context,
-                            initialDate: DateTime.now(),
-                            firstDate: DateTime(2021),
-                            lastDate: DateTime(2100));
-
-                        if (date != null) {
-                          _setDateTime = DateTime(date.year, date.month,
-                              date.day, _setDateTime.hour, _setDateTime.minute);
-                          dateController.text =
-                              date.toString().substring(0, 10);
-                        }
-                      }),
-                ),
-                Flexible(
-                  flex: 2,
-                  child: TextFormField(
-                      controller: timeController,
-                      decoration: InputDecoration(
-                        hintText: "Press to choose a time",
-                      ),
-                      onTap: () async {
-                        var time = await showTimePicker(
-                          context: context,
-                          initialTime: TimeOfDay.now(),
-                        );
-
-                        if (time != null) {
-                          _setDateTime = DateTime(
-                              _setDateTime.year,
-                              _setDateTime.month,
-                              _setDateTime.day,
-                              time.hour,
-                              time.minute);
-                          timeController.text = time.format(context);
-                        }
-                      }),
-                ),
-                ElevatedButton(
-                  child: Text("Send"),
-                  onPressed: () => sendKey(
-                      context,
-                      CreatedKeyEntity(
-                        textController.text,
-                        _setDateTime,
-                      )),
-                )
-              ],
-            ),
+            ElevatedButton(
+              child: Text("Send"),
+              onPressed: () => sendKey(
+                  context,
+                  CreatedKeyEntity(
+                    textController.text,
+                    DateTime.now().millisecondsSinceEpoch,
+                  )),
+            )
           ],
         ),
       ),
@@ -103,6 +55,8 @@ class KeyMakerPage extends StatelessWidget {
 
   sendKey(BuildContext context, CreatedKeyEntity key) async {
     FirebaseMessaging _messaging = FirebaseMessaging.instance;
+
+    saveKey(key);
 
     String? token = await _messaging.getToken(
       vapidKey:
@@ -130,7 +84,8 @@ class KeyMakerPage extends StatelessWidget {
               "notificationLayout": "BigText",
               "showWhen": true,
               "autoCancel": true,
-              "privacy": "Private"
+              "privacy": "Private",
+              "timestamp": key.timeStamp
             },
             "actionButtons": [
               {"key": "KEEP", "label": "keep", "autoCancel": true}
@@ -139,9 +94,27 @@ class KeyMakerPage extends StatelessWidget {
           "android": {"priority": "high"}
         }));
 
-    showDialog(
-        context: context,
-        builder: (_) => AlertDialog(title: Text("successfully sent")));
+    ScaffoldMessenger.of(context).showMaterialBanner(
+      MaterialBanner(
+        content: const Text('successfully sent'),
+        leading: const Icon(Icons.info),
+        backgroundColor: Colors.yellow,
+        actions: [
+          TextButton(
+            child: const Text('Dismiss'),
+            onPressed: () =>
+                ScaffoldMessenger.of(context).hideCurrentMaterialBanner(),
+          ),
+        ],
+      ),
+    );
     print(response.body);
+  }
+
+  saveKey(CreatedKeyEntity key) async {
+    FirebaseDatabase(databaseURL: "https://burnapp-fca75.firebaseio.com/")
+        .reference()
+        .child("createdKeys/${key.timeStamp}")
+        .set(key.text);
   }
 }

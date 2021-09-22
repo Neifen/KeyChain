@@ -1,4 +1,5 @@
 import 'package:awesome_notifications/awesome_notifications.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/widgets.dart';
 import 'package:key_chain/keychain/db/key_saver.dart';
 import 'package:key_chain/keychain/db/key_entity.dart';
@@ -24,7 +25,7 @@ class KeyReciever extends ChangeNotifier {
     KeySaver().removeKey(key);
   }
 
-  void _onNotificationAction(ReceivedAction event) {
+  void _onNotificationAction(ReceivedAction event) async {
     if (event.body != null) {
       var key = KeyEntity(
           content: event.body!,
